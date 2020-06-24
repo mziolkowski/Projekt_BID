@@ -165,7 +165,13 @@ summary(drzewo.reg.pl)
 plot(drzewo.reg.pl)
 text(drzewo.reg.pl, pretty = 0)
 
-## TODO here
+prognoza.tree.pl <-predict(drzewo.reg.pl, newdata = data.frame(cases = danePL$cases[(count.treningowy.pl+8):lengthPL]))
+prognoza.tree.pl
+wyniki.przyciete.pl <- table(prognoza.tree.pl, danePL$deaths[(count.treningowy.pl+8):lengthPL])
+wyniki.przyciete.pl
+sum(diag(wyniki.przyciete.pl)/sum(wyniki.przyciete.pl))
+
+################################################################################
 
 # Jeżeli dziś jest 10 przypadków to za 14 dni będzie X śmierci
 b <- data.frame(
@@ -174,28 +180,120 @@ b <- data.frame(
 )
 b
 
-drzewo.reg.pl <- tree(deaths~cases, b)
-summary(drzewo.reg.pl)
-plot(drzewo.reg.pl)
-text(drzewo.reg.pl, pretty = 0)
+drzewo.reg.pl.b <- tree(deaths~cases, b)
+summary(drzewo.reg.pl.b)
+plot(drzewo.reg.pl.b)
+text(drzewo.reg.pl.b, pretty = 0)
 
+prognoza.tree.pl.b <-predict(drzewo.reg.pl.b, newdata = data.frame(cases = danePL$cases[(count.treningowy.pl+8):lengthPL]))
+prognoza.tree.pl.b
+wyniki.przyciete.pl.b <- table(prognoza.tree.pl.b, danePL$deaths[(count.treningowy.pl+8):lengthPL])
+wyniki.przyciete.pl.b
+sum(diag(wyniki.przyciete.pl.b)/sum(wyniki.przyciete.pl.b))
+################################################################################
+################################################################################
 
-
-
-
-
-
-
-
-
-
+# Przypadek jeżeli dziś jest 10 przypadków to dziś jest X śmierci
 drzewo.reg.se <- tree(deaths~cases, treningowy.se)
 summary(drzewo.reg.se)
 plot(drzewo.reg.se)
 text(drzewo.reg.se, pretty = 0)
 
+# Jeżeli dziś jest 10 przypadków to za 7 dni będzie X śmierci
+lengthSE <- nrow(daneSE)
+count.treningowy.se <- floor(lengthSE * 0.8)
+
+treningowy.se <- daneSE[1:count.treningowy.se,]
+testowy.se <- daneSE[(count.treningowy.se+1):lengthSE,]
+
+a <- data.frame(
+  cases=daneSE$cases[1:count.treningowy.se],
+  deaths=daneSE$deaths[8:(count.treningowy.se+7)]
+)
+a
+
+drzewo.reg.se <- tree(deaths~cases, a)
+summary(drzewo.reg.se)
+plot(drzewo.reg.se)
+text(drzewo.reg.se, pretty = 0)
+
+prognoza.tree.se <-predict(drzewo.reg.se, newdata = data.frame(cases = daneSE$cases[(count.treningowy.se+8):lengthSE]))
+prognoza.tree.se
+wyniki.przyciete.se <- table(prognoza.tree.se, daneSE$deaths[(count.treningowy.se+8):lengthSE])
+wyniki.przyciete.se
+sum(diag(wyniki.przyciete.se)/sum(wyniki.przyciete.se))
+
+################################################################################
+
+# Jeżeli dziś jest 10 przypadków to za 14 dni będzie X śmierci
+b <- data.frame(
+  cases=daneSE$cases[1:count.treningowy.se],
+  deaths=daneSE$deaths[14:(count.treningowy.se+13)]
+)
+b
+
+drzewo.reg.se.b <- tree(deaths~cases, b)
+summary(drzewo.reg.se.b)
+plot(drzewo.reg.se.b)
+text(drzewo.reg.se.b, pretty = 0)
+
+prognoza.tree.se.b <-predict(drzewo.reg.se.b, newdata = data.frame(cases = daneSE$cases[(count.treningowy.se+8):lengthSE]))
+prognoza.tree.se.b
+wyniki.przyciete.se.b <- table(prognoza.tree.se.b, daneSE$deaths[(count.treningowy.se+8):lengthSE])
+wyniki.przyciete.se.b
+sum(diag(wyniki.przyciete.pl.b)/sum(wyniki.przyciete.pl.b))
+
+
+################################################################################
+################################################################################
+# Przypadek jeżeli dziś jest 10 przypadków to dziś jest X śmierci
 drzewo.reg.it <- tree(deaths~cases, treningowy.it)
 summary(drzewo.reg.it)
 plot(drzewo.reg.it)
 text(drzewo.reg.it, pretty = 0)
+
+# Jeżeli dziś jest 10 przypadków to za 7 dni będzie X śmierci
+lengthIT <- nrow(daneIT)
+count.treningowy.it <- floor(lengthIT * 0.8)
+
+treningowy.it <- daneIT[1:count.treningowy.it,]
+testowy.it <- daneIT[(count.treningowy.it+1):lengthIT,]
+
+a <- data.frame(
+  cases=daneIT$cases[1:count.treningowy.it],
+  deaths=daneIT$deaths[8:(count.treningowy.it+7)]
+)
+a
+
+drzewo.reg.it <- tree(deaths~cases, a)
+summary(drzewo.reg.it)
+plot(drzewo.reg.it)
+text(drzewo.reg.it, pretty = 0)
+
+prognoza.tree.it <-predict(drzewo.reg.it, newdata = data.frame(cases = daneIT$cases[(count.treningowy.it+8):lengthIT]))
+prognoza.tree.it
+wyniki.przyciete.it <- table(prognoza.tree.it, daneIT$deaths[(count.treningowy.se+8):lengthIT])
+wyniki.przyciete.it
+sum(diag(wyniki.przyciete.it)/sum(wyniki.przyciete.it))
+
+################################################################################
+
+# Jeżeli dziś jest 10 przypadków to za 14 dni będzie X śmierci
+b <- data.frame(
+  cases=daneIT$cases[1:count.treningowy.it],
+  deaths=daneIT$deaths[14:(count.treningowy.it+13)]
+)
+b
+
+drzewo.reg.it.b <- tree(deaths~cases, b)
+summary(drzewo.reg.it.b)
+plot(drzewo.reg.it.b)
+text(drzewo.reg.it.b, pretty = 0)
+
+prognoza.tree.it.b <-predict(drzewo.reg.it.b, newdata = data.frame(cases = daneIT$cases[(count.treningowy.it+8):lengthIT]))
+prognoza.tree.it.b
+wyniki.przyciete.it.b <- table(prognoza.tree.it.b, daneIT$deaths[(count.treningowy.it+8):lengthIT])
+wyniki.przyciete.it.b
+sum(diag(wyniki.przyciete.it.b)/sum(wyniki.przyciete.it.b))
+
 
