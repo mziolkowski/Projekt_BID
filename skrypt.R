@@ -1,4 +1,4 @@
-# PROJEKT COVID-19 JAKUB CIEAŚLIK::MACIEJ ZIOLKOWSK::JAKUB WOJCIK
+# PROJEKT COVID-19 JAKUB CIESLIK::MACIEJ ZIOLKOWSK::JAKUB WOJCIK
 attach(COVID_19_FULL)
 
 danePL <- COVID_19_FULL[COVID_19_FULL$geoId=='PL',]
@@ -31,23 +31,23 @@ plot(daneIT$nextDay, daneIT$cases)
 
 ################################################################################
 ################################################################################
-reg.pl <- lm(danePL$cases~danePL$nextDay) #43% dopasowanie modelu
-regkwadrat.pl <- lm(danePL$cases~danePL$nextDay + I(danePL$nextDay^2)) # 60% dopasowanie modelu
-regszwscian.pl <-lm(danePL$cases~danePL$nextDay + I(danePL$nextDay^2) + I(danePL$nextDay^3)) # 62% dopasowanie modelu
+reg.pl <- lm(cases~nextDay, data = danePL) #44% dopasowanie modelu
+regkwadrat.pl <- lm(cases~nextDay + I(nextDay^2), data = danePL) # 59% dopasowanie modelu
+regszwscian.pl <-lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = danePL) # 62% dopasowanie modelu
 summary(reg.pl)
 summary(regkwadrat.pl)
 summary(regszwscian.pl)
 
-reg.se <- lm(daneSE$cases~daneSE$nextDay) # 63% dopasowanie modelu
-regkwadrat.se <- lm(daneSE$cases~daneSE$nextDay + I(daneSE$nextDay^2)) # 65% dopasowanie modelu
-regszwscian.se <-lm(daneSE$cases~daneSE$nextDay + I(daneSE$nextDay^2) + I(daneSE$nextDay^3)) # 66% dopasowanie modelu
+reg.se <- lm(cases~nextDay, data = daneSE) # 63% dopasowanie modelu
+regkwadrat.se <- lm(cases~nextDay + I(nextDay^2), data = daneSE) # 65% dopasowanie modelu
+regszwscian.se <-lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = daneSE) # 66% dopasowanie modelu
 summary(reg.se)
 summary(regkwadrat.se)
 summary(regszwscian.se)
 
-reg.it <- lm(daneIT$cases~daneIT$nextDay) # 0.4% dopasowanie modelu
-regkwadrat.it <- lm(daneIT$cases~daneIT$nextDay + I(daneIT$nextDay^2)) # 46% dopasowanie modelu
-regszwscian.it <-lm(daneIT$cases~daneIT$nextDay + I(daneIT$nextDay^2) + I(daneIT$nextDay^3)) # 52% dopasowanie modelu
+reg.it <- lm(cases~nextDay, data = daneIT) # 0.3 dopasowanie modelu
+regkwadrat.it <- lm(cases~nextDay + I(nextDay^2), data = daneIT) # 46% dopasowanie modelu
+regszwscian.it <-lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = daneIT) # 52% dopasowanie modelu
 summary(reg.it)
 summary(regkwadrat.it)
 summary(regszwscian.it)
@@ -60,7 +60,7 @@ count.treningowy.pl <- floor(lengthPL * 0.8)
 treningowy.pl <- danePL[1:count.treningowy.pl,]
 testowy.pl <- danePL[(count.treningowy.pl+1):lengthPL,]
 
-reg.pl.treningowy <- lm(treningowy.pl$cases~treningowy.pl$nextDay) #55% dopasowanie modelu
+reg.pl.treningowy <- lm(cases~nextDay, data = treningowy.pl) #55% dopasowanie modelu
 summary(reg.pl.treningowy)
 
 ################################################################################
@@ -70,7 +70,7 @@ count.treningowy.se <- floor(lengthSE * 0.8)
 treningowy.se <- daneSE[1:count.treningowy.se,]
 testowy.se <- daneSE[(count.treningowy.se+1):lengthSE,]
 
-reg.se.treningowy <- lm(treningowy.se$cases~treningowy.se$nextDay) #73% dopasowanie modelu
+reg.se.treningowy <- lm(cases~nextDay, data = treningowy.se) #74% dopasowanie modelu
 summary(reg.se.treningowy)
 
 ################################################################################
@@ -80,37 +80,52 @@ count.treningowy.it <- floor(lengthIT * 0.8)
 treningowy.it <- daneIT[1:count.treningowy.it,]
 testowy.it <- daneIT[(count.treningowy.it+1):lengthIT,]
 
-reg.it.treningowy <- lm(treningowy.it$cases~treningowy.it$nextDay) #33% dopasowanie modelu
+reg.it.treningowy <- lm(cases~nextDay, data = treningowy.it) #33% dopasowanie modelu
 summary(reg.it.treningowy)
 
 ################################################################################
 ################################################################################
 
-regkwadrat.pl <-lm(danePL$cases~danePL$nextDay + I(danePL$nextDay^2)) # 60% dopasowanie modelu
-regszwscian.pl <-lm(danePL$cases~danePL$nextDay + I(danePL$nextDay^2) + I(danePL$nextDay^3)) # 62% dopasowanie modelu
+regkwadrat.pl <-lm(cases~nextDay + I(nextDay^2), data = danePL) # 59% dopasowanie modelu
+regszwscian.pl <-lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = danePL) # 62% dopasowanie modelu
 summary(regkwadrat.pl)
 summary(regszwscian.pl)
 
-regkwadrat.se <-lm(daneSE$cases~daneSE$nextDay + I(daneSE$nextDay^2)) # 64% dopasowanie modelu
-regszwscian.se <-lm(daneSE$cases~daneSE$nextDay + I(daneSE$nextDay^2) + I(daneSE$nextDay^3)) # 66% dopasowanie modelu
+regkwadrat.se <-lm(cases~nextDay + I(nextDay^2), data = daneSE) # 65% dopasowanie modelu
+regszwscian.se <-lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = daneSE) # 66% dopasowanie modelu
 summary(regkwadrat.se)
 summary(regszwscian.se)
 
-regkwadrat.it <-lm(daneIT$cases~daneIT$nextDay + I(daneIT$nextDay^2)) # 46% dopasowanie modelu
-regszwscian.it <-lm(daneIT$cases~daneIT$nextDay + I(daneIT$nextDay^2) + I(daneIT$nextDay^3)) # 52% dopasowanie modelu
+regkwadrat.it <-lm(cases~nextDay + I(nextDay^2), data = daneIT) # 46% dopasowanie modelu
+regszwscian.it <-lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = daneIT) # 52% dopasowanie modelu
 summary(regkwadrat.it)
 summary(regszwscian.it)
 
-
-#NA TYM ETAPIE SKONCZONE. NIE DZIALA PREDYKCJA 'envir' fail
+################################################################################
+################################################################################
 testowy.pl$nextDay <- seq.int(nrow(testowy.pl))
-predykcja.pl <- predict(reg.pl.treningowy, testowy.pl$nextDay, interval = "prediction") 
+predykcja.pl <- predict(reg.pl.treningowy, newdata = data.frame(nextDay = testowy.pl$nextDay), interval = "prediction") 
 predykcja.pl 
-testowy.pl
-#dokonczyc dla reszty
+
+testowy.se$nextDay <- seq.int(nrow(testowy.se))
+predykcja.se <- predict(reg.se.treningowy, newdata = data.frame(nextDay = testowy.se$nextDay), interval = "prediction") 
+predykcja.se
+
+testowy.it$nextDay <- seq.int(nrow(testowy.it))
+predykcja.it <- predict(reg.it.treningowy, newdata = data.frame(nextDay = testowy.it$nextDay), interval = "prediction") 
+predykcja.it
+################################################################################
+################################################################################
 
 plot(testowy.pl$nextDay, testowy.pl$cases)
 abline(reg.pl.treningowy$coefficients, col="red", lwd=2)
-segments(testowy.pl$nextDay,fitted.values(predykcja.pl), testowy.pl$nextDay, testowy.pl$cases)
+segments(testowy.pl$nextDay,fitted.values(reg.pl.treningowy), testowy.pl$nextDay, testowy.pl$cases)
 
+plot(testowy.se$nextDay, testowy.se$cases)
+abline(reg.se.treningowy$coefficients, col="red", lwd=2)
+segments(testowy.se$nextDay,fitted.values(reg.se.treningowy), testowy.se$nextDay, testowy.se$cases)
+
+plot(testowy.it$nextDay, testowy.it$cases)
+abline(reg.it.treningowy$coefficients, col="red", lwd=2)
+segments(testowy.it$nextDay,fitted.values(reg.it.treningowy), testowy.it$nextDay, testowy.it$cases)
 
