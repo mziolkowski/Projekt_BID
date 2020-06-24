@@ -141,10 +141,53 @@ segments(testowy.it$nextDay,fitted.values(reg.it.treningowy), testowy.it$nextDay
 install.packages("tree")
 library(tree)
 
+# Przypadek jeżeli dziś jest 10 przypadków to dziś jest X śmierci
 drzewo.reg.pl <- tree(deaths~cases, treningowy.pl)
 summary(drzewo.reg.pl)
 plot(drzewo.reg.pl)
 text(drzewo.reg.pl, pretty = 0)
+
+# Jeżeli dziś jest 10 przypadków to za 7 dni będzie X śmierci
+lengthPL <- nrow(danePL)
+count.treningowy.pl <- floor(lengthPL * 0.8)
+
+treningowy.pl <- danePL[1:count.treningowy.pl,]
+testowy.pl <- danePL[(count.treningowy.pl+1):lengthPL,]
+
+a <- data.frame(
+  cases=danePL$cases[1:count.treningowy.pl],
+  deaths=danePL$deaths[8:(count.treningowy.pl+7)]
+  )
+a
+
+drzewo.reg.pl <- tree(deaths~cases, a)
+summary(drzewo.reg.pl)
+plot(drzewo.reg.pl)
+text(drzewo.reg.pl, pretty = 0)
+
+## TODO here
+
+# Jeżeli dziś jest 10 przypadków to za 14 dni będzie X śmierci
+b <- data.frame(
+  cases=danePL$cases[1:count.treningowy.pl],
+  deaths=danePL$deaths[14:(count.treningowy.pl+13)]
+)
+b
+
+drzewo.reg.pl <- tree(deaths~cases, b)
+summary(drzewo.reg.pl)
+plot(drzewo.reg.pl)
+text(drzewo.reg.pl, pretty = 0)
+
+
+
+
+
+
+
+
+
+
 
 drzewo.reg.se <- tree(deaths~cases, treningowy.se)
 summary(drzewo.reg.se)
