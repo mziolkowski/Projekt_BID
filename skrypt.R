@@ -1,11 +1,18 @@
 # PROJEKT COVID-19 JAKUB CIESLIK::MACIEJ ZIOLKOWSK::JAKUB WOJCIK
 attach(COVID_19_FULL)
 
-danePL <- COVID_19_FULL[COVID_19_FULL$geoId=='PL',]
+#danePL <- COVID_19_FULL[COVID_19_FULL$geoId=='PL',]
+#danePL
+#daneSE <- COVID_19_FULL[COVID_19_FULL$geoId=='SE',]
+#daneSE
+#daneIT <- COVID_19_FULL[COVID_19_FULL$geoId=='IT',]
+#daneIT
+
+danePL <- subset(COVID_19_FULL[COVID_19_FULL$geoId=='PL',], cases > 0 )
 danePL
-daneSE <- COVID_19_FULL[COVID_19_FULL$geoId=='SE',]
+daneSE <- subset(COVID_19_FULL[COVID_19_FULL$geoId=='SE',], cases > 0 )
 daneSE
-daneIT <- COVID_19_FULL[COVID_19_FULL$geoId=='IT',]
+daneIT <- subset(COVID_19_FULL[COVID_19_FULL$geoId=='IT',], cases > 0 )
 daneIT
 
 ################################################################################
@@ -25,9 +32,9 @@ daneIT<- daneIT[seq(dim(daneIT)[1],1),]
 daneIT$nextDay <- seq.int(nrow(daneIT))
 daneIT$nextDay
 
-plot(danePL$nextDay, danePL$cases) 
-plot(daneSE$nextDay, daneSE$cases) 
-plot(daneIT$nextDay, daneIT$cases)
+plot(danePL$nextDay, danePL$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Polski')
+plot(daneSE$nextDay, daneSE$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Szewcji')
+plot(daneIT$nextDay, daneIT$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Włoch')
 
 ################################################################################
 ################################################################################
@@ -128,4 +135,24 @@ segments(testowy.se$nextDay,fitted.values(reg.se.treningowy), testowy.se$nextDay
 plot(testowy.it$nextDay, testowy.it$cases)
 abline(reg.it.treningowy$coefficients, col="red", lwd=2)
 segments(testowy.it$nextDay,fitted.values(reg.it.treningowy), testowy.it$nextDay, testowy.it$cases)
+
+################################################################################
+################################################################################
+install.packages("tree")
+library(tree)
+
+drzewo.reg.pl <- tree(deaths~cases, treningowy.pl)
+summary(drzewo.reg.pl)
+plot(drzewo.reg.pl)
+text(drzewo.reg.pl, pretty = 0)
+
+drzewo.reg.se <- tree(deaths~cases, treningowy.se)
+summary(drzewo.reg.se)
+plot(drzewo.reg.se)
+text(drzewo.reg.se, pretty = 0)
+
+drzewo.reg.it <- tree(deaths~cases, treningowy.it)
+summary(drzewo.reg.it)
+plot(drzewo.reg.it)
+text(drzewo.reg.it, pretty = 0)
 
