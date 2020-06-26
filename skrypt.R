@@ -90,14 +90,29 @@ segments(testowy$nextDay, predykcja.3ciapotega[,1], testowy$nextDay, testowy$cas
 # Model predykujący początek pandemii
 plot(danePL$nextDay, danePL$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Polski')
 plot(daneSE$nextDay, daneSE$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Szewcji')
-plot(daneIT$nextDay, daneIT$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Włoch')
-poczatek.dane <- data.frame(nextDay = c(danePL$nextDay[1:30], daneSE$nextDay[1:30], daneIT$nextDay[1:30]),
-                            cases = c(danePL$cases[1:30], daneSE$cases[1:30], daneIT$cases[1:30]))
-plot(poczatek.dane$nextDay, poczatek.dane$cases)
+# plot(daneIT$nextDay, daneIT$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Włoch')
+# poczatek.dane <- data.frame(nextDay = c(danePL$nextDay[1:30], daneSE$nextDay[1:30], daneIT$nextDay[1:30]),
+#                             cases = c(danePL$cases[1:30], daneSE$cases[1:30], daneIT$cases[1:30]))
+poczatek.dane <- data.frame(nextDay = c(danePL$nextDay[1:30], daneSE$nextDay[1:30]),
+                           cases = c(danePL$cases[1:30], daneSE$cases[1:30]))
+plot(poczatek.dane$nextDay, poczatek.dane$cases, xlab = 'Kolejne dni', ylab = 'Przypadki')
 
-## NALEZY wczytac przed tym dane <- daneSE
+reg.treningowy.kwadrat <- lm(cases~nextDay + I(nextDay^2), data = poczatek.dane) 
+summary(reg.treningowy.kwadrat)
+kolejne.dni <- data.frame(nextDay = c(31:44))
+predykcja.kwadrat <- predict(reg.treningowy.kwadrat, newdata = kolejne.dni, interval = "prediction") 
+plot(c(1:44), c(danePL$cases[1:30],predykcja.kwadrat[,1]), xlab = 'Kolejne dni', ylab = 'Przypadki', main = 'Przedykcja rozwoju')
+segments(c(31:44), predykcja.kwadrat[,1], c(31:44), danePL$cases[31:44], col="red")
+points(c(31:44),danePL$cases[31:44], col="red")
+
+## NALEZY:
+# 1. zbudować model dla danych PL
+# 2. wczytac dane <- daneSE i zainicjalizować zbiór testowy
 predykcja.se <- predict(reg.treningowy, newdata = data.frame(nextDay = testowy$nextDay), interval = "prediction") 
 predykcja.se
+plot(daneSE$nextDay, daneSE$cases, xlab = 'Kolejne dni', ylab = 'Przypadki')
+lines(testowy$nextDay, predykcja.se[,1], col="red")
+segments(testowy$nextDay, predykcja.se[,1], testowy$nextDay, testowy$cases)
 ################################################################################
 ################################################################################
 install.packages("tree")
