@@ -1,13 +1,6 @@
 # PROJEKT COVID-19 JAKUB CIESLIK::MACIEJ ZIOLKOWSK::JAKUB WOJCIK
 attach(COVID_19)
 
-#danePL <- COVID_19_FULL[COVID_19_FULL$geoId=='PL',]
-#danePL
-#daneSE <- COVID_19_FULL[COVID_19_FULL$geoId=='SE',]
-#daneSE
-#daneIT <- COVID_19_FULL[COVID_19_FULL$geoId=='IT',]
-#daneIT
-
 danePL <- subset(COVID_19[COVID_19$geoId=='PL',], cases > 0 )
 danePL
 daneSE <- subset(COVID_19[COVID_19$geoId=='SE',], cases > 0 )
@@ -65,36 +58,34 @@ dane <- daneSE
 dane <- daneIT # Dla Włoch nie ma to sensu
 
 ## Predykcja, linear modulation
-lengthPL <- nrow(dane)
-count.treningowy.pl <- floor(lengthPL * 0.8)
+length <- nrow(dane)
+count.treningowy <- floor(length * 0.8)
 
-treningowy.pl <- dane[1:count.treningowy.pl,]
-testowy.pl <- dane[(count.treningowy.pl+1):lengthPL,]
+treningowy <- dane[1:count.treningowy,]
+testowy <- dane[(count.treningowy+1):length,]
 
-reg.pl.treningowy <- lm(cases~nextDay, data = treningowy.pl) #55% dopasowanie modelu
-summary(reg.pl.treningowy)
-predykcja.pl <- predict(reg.pl.treningowy, newdata = data.frame(nextDay = testowy.pl$nextDay), interval = "prediction") 
-plot(testowy.pl$nextDay, testowy.pl$cases, xlab = 'Kolejne dni', ylab = 'Przypadki', main = 'Liczba przypadków dla Polski (zbiór testowy)')
-abline(reg.pl.treningowy$coefficients, col = "red", lwd=2)
-segments(testowy.pl$nextDay, predykcja.pl[,1], testowy.pl$nextDay, testowy.pl$cases)
+reg.treningowy <- lm(cases~nextDay, data = treningowy)
+summary(reg.treningowy)
+predykcja <- predict(reg.treningowy, newdata = data.frame(nextDay = testowy$nextDay), interval = "prediction") 
+plot(testowy$nextDay, testowy$cases, xlab = 'Kolejne dni', ylab = 'Przypadki', main = 'Liczba przypadków (zbiór testowy)')
+abline(reg.treningowy$coefficients, col = "red", lwd=2)
+segments(testowy$nextDay, predykcja[,1], testowy$nextDay, testowy$cases)
 
 ## Funkcja kwadratowa 
-reg.pl.treningowy.kwadrat <- lm(cases~nextDay + I(nextDay^2), data = treningowy.pl) #72%
-summary(reg.pl.treningowy.kwadrat)
-predykcja.pl.kwadrat <- predict(reg.pl.treningowy.kwadrat, newdata = data.frame(nextDay = testowy.pl$nextDay), interval = "prediction") 
-plot(testowy.pl$nextDay, testowy.pl$cases, xlab = 'Kolejne dni', ylab = 'Przypadki', main = 'Liczba przypadków dla Polski (zbiór testowy)')
-lines(testowy.pl$nextDay, predykcja.pl.kwadrat[,1], col="red", lwd=2)
-segments(testowy.pl$nextDay, predykcja.pl.kwadrat[,1], testowy.pl$nextDay, testowy.pl$cases)
+reg.treningowy.kwadrat <- lm(cases~nextDay + I(nextDay^2), data = treningowy) 
+summary(reg.treningowy.kwadrat)
+predykcja.kwadrat <- predict(reg.treningowy.kwadrat, newdata = data.frame(nextDay = testowy$nextDay), interval = "prediction") 
+plot(testowy$nextDay, testowy$cases, xlab = 'Kolejne dni', ylab = 'Przypadki', main = 'Liczba przypadków (zbiór testowy)')
+lines(testowy$nextDay, predykcja.kwadrat[,1], col="red", lwd=2)
+segments(testowy$nextDay, predykcja.kwadrat[,1], testowy$nextDay, testowy$cases)
 
 # Wielomian 3-ciego stopnia
-reg.pl.treningowy.3ciapotega <- lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = treningowy.pl) #73%
-# Dla Szwecji
-# reg.pl.treningowy.3ciapotega <- lm(cases~nextDay + I(nextDay^2) + I(nextDay^3) + I(nextDay^4), data = treningowy.pl) #73%
-summary(reg.pl.treningowy.3ciapotega)
-predykcja.pl.3ciapotega<- predict(reg.pl.treningowy.3ciapotega, newdata = data.frame(nextDay = testowy.pl$nextDay), interval = "prediction") 
-plot(testowy.pl$nextDay, testowy.pl$cases, xlab = 'Kolejne dni', ylab = 'Przypadki', main = 'Liczba przypadków dla Polski (zbiór testowy)')
-lines(testowy.pl$nextDay, predykcja.pl.3ciapotega[,1], col="red", lwd=2)
-segments(testowy.pl$nextDay, predykcja.pl.3ciapotega[,1], testowy.pl$nextDay, testowy.pl$cases)
+reg.treningowy.3ciapotega <- lm(cases~nextDay + I(nextDay^2) + I(nextDay^3), data = treningowy) 
+summary(reg.treningowy.3ciapotega)
+predykcja.3ciapotega<- predict(reg.treningowy.3ciapotega, newdata = data.frame(nextDay = testowy$nextDay), interval = "prediction") 
+plot(testowy$nextDay, testowy$cases, xlab = 'Kolejne dni', ylab = 'Przypadki', main = 'Liczba przypadków (zbiór testowy)')
+lines(testowy$nextDay, predykcja.3ciapotega[,1], col="red", lwd=2)
+segments(testowy$nextDay, predykcja.3ciapotega[,1], testowy$nextDay, testowy$cases)
 
 # Model predykujący początek pandemii
 plot(danePL$nextDay, danePL$cases, xlab = 'Kolejne dni', ylab = 'Przypadki' ,main = 'Liczba przypadków dla Polski')
@@ -104,8 +95,9 @@ poczatek.dane <- data.frame(nextDay = c(danePL$nextDay[1:30], daneSE$nextDay[1:3
                             cases = c(danePL$cases[1:30], daneSE$cases[1:30], daneIT$cases[1:30]))
 plot(poczatek.dane$nextDay, poczatek.dane$cases)
 
-## TODO
-
+## NALEZY wczytac przed tym dane <- daneSE
+predykcja.se <- predict(reg.treningowy, newdata = data.frame(nextDay = testowy$nextDay), interval = "prediction") 
+predykcja.se
 ################################################################################
 ################################################################################
 install.packages("tree")
@@ -127,7 +119,7 @@ testowy.pl <- danePL[(count.treningowy.pl+1):lengthPL,]
 a <- data.frame(
   cases=danePL$cases[1:count.treningowy.pl],
   deaths=danePL$deaths[8:(count.treningowy.pl+7)]
-  )
+)
 a
 
 drzewo.reg.pl <- tree(deaths~cases, a)
@@ -265,5 +257,8 @@ prognoza.tree.it.b
 wyniki.przyciete.it.b <- table(prognoza.tree.it.b, daneIT$deaths[(count.treningowy.it+8):lengthIT])
 wyniki.przyciete.it.b
 sum(diag(wyniki.przyciete.it.b)/sum(wyniki.przyciete.it.b))
+
+
+
 
 
